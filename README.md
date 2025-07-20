@@ -28,7 +28,6 @@ A simple web tool that converts any YouTube URL into an RSS feed. Paste any YouT
 3. **RSS Generation**: Creates the appropriate RSS feed URL using YouTube's feed endpoints
 4. **CORS Handling**: Uses proxy services to bypass browser CORS restrictions
 
-## Technical Details
 
 ### Channel ID Extraction
 
@@ -64,20 +63,6 @@ const patterns = [
 **_Want to make a scrolling ticker for your frontend project?_**
 
 - https://github.com/DevManSam777/rss-ticker
-
-### Local Development
-
-# Serve locally (any HTTP server)
-
-```
-python -m http.server 8000
-```
-
-# or
-
-```
-npx serve .
-```
 
 ## License
 

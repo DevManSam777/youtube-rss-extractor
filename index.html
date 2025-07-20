@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube RSS Extractor</title>
+    <meta name="description" content="Convert any YouTube channel or playlist URL to RSS feed automatically">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>YouTube RSS Extractor</h1>
+        <p>Paste any YouTube URL and get the RSS feed automatically</p>
+        
+        <div class="form">
+            <input type="text" id="input" placeholder="Paste YouTube URL here">
+            <button onclick="getRSS()" id="mainBtn">Get RSS Feed</button>
+        </div>
+        
+        <div id="loading" class="loading hidden">
+            <div class="spinner"></div>
+            <span id="loadingText">Processing...</span>
+        </div>
+        
+        <div id="result" class="result hidden">
+            <h3>RSS Feed URL:</h3>
+            <div class="url-box">
+                <input type="text" id="rssOutput" readonly>
+                <button onclick="copyURL()">Copy</button>
+            </div>
+        </div>
+        
+        <div class="examples">
+            <h3>Try These:</h3>
+            <div class="example-list">
+                <button onclick="tryExample('@mkbhd')">MKBHD</button>
+                <button onclick="tryExample('@veritasium')">Veritasium</button>
+                <button onclick="tryExample('@ted')">TED Talks</button>
+                <button onclick="tryExample('@linustechtips')">Linus Tech Tips</button>
+            </div>
+        </div>
+        
+        <div class="info">
+            <h3>Just paste any YouTube URL:</h3>
+            <ul>
+                <li>Channel pages (with /podcasts, /videos, etc.)</li>
+                <li>@handles or channel handles</li>
+                <li>Playlist URLs</li>
+                <li>Video URLs (gets the channel)</li>
+                <li>Channel IDs or playlist IDs</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
