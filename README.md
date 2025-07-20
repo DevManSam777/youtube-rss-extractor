@@ -28,6 +28,16 @@ A simple web tool that converts any YouTube URL into an RSS feed. Paste any YouT
 3. **RSS Generation**: Creates the appropriate RSS feed URL using YouTube's feed endpoints
 4. **CORS Handling**: Uses proxy services to bypass browser CORS restrictions
 
+<small>*When a YouTube handle is entered, the browser can't directly fetch YouTube's page because of CORS security rules that prevent websites from accessing other domains. To get around this, the program uses a proxy service as a middleman.*</small>
+
+<small>*The browser makes a request like `fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent('https://www.youtube.com/@handle'))` - essentially asking the proxy server "please go get this YouTube page for me." The proxy server (running on api.allorigins.win) receives this request and understands that it needs to fetch the YouTube page on behalf of the browser.*</small>
+
+<small>*The proxy then makes its own server-to-server request directly to the YouTube URL on their backend. YouTube responds normally to the proxy server because it's a legitimate server making the request, not a browser trying to access cross-origin content.*</small>
+
+<small>*YouTube sends back thousands of lines of HTML containing all the page data, including embedded JavaScript with the channel ID like `"channelId":"UC1234567890123456789012"`. The proxy server then forwards this entire HTML response back to the browser with special CORS headers that tell the browser "this content is safe to use."*</small>
+
+<small>*The browser receives the full YouTube page source as a text string through `const html = await response.text()`, and the JavaScript can then search through this HTML string using regex patterns like `html.match(/"channelId":"(UC[a-zA-Z0-9_-]{22})"/)` to extract the channel ID, which gets turned into the final RSS feed URL.*</small>
+
 
 ### Channel ID Extraction
 
