@@ -66,4 +66,6 @@ const patterns = [
 
 ## License
 
-![LICENSE](LICENSE)
+[LICENSE](LICENSE)  
+
+Copyright (c) 2025 DevManSam
