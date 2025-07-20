@@ -2,7 +2,7 @@
 
 ![image of youtube rss extractor](youtube-rss-extractor.png)
 
-A simple web tool that converts any YouTube URL into an RSS feed. Paste any YouTube channel, playlist, or video URL and get the corresponding RSS feed automatically.
+A web tool GUI that converts any YouTube URL into an RSS feed. Paste any YouTube channel, playlist, or video URL and get the corresponding RSS feed automatically.
 
 ## Features
 
