@@ -118,9 +118,19 @@ async function getChannelIdFromVideo(videoId) {
                 const response = await fetch(proxy + encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`));
                 if (response.ok) {
                     const html = await response.text();
-                    const match = html.match(/"channelId":"(UC[a-zA-Z0-9_-]{22})"/);
-                    if (match) {
-                        return match[1];
+                    
+                    // Look for the main channel ID in video pages
+                    const patterns = [
+                        /"channelId":"(UC[a-zA-Z0-9_-]{22})"/,
+                        /"ownerChannelName":"[^"]*","externalChannelId":"(UC[a-zA-Z0-9_-]{22})"/,
+                        /<link itemprop="url" href="https:\/\/www\.youtube\.com\/channel\/(UC[a-zA-Z0-9_-]{22})">/
+                    ];
+                    
+                    for (let pattern of patterns) {
+                        const match = html.match(pattern);
+                        if (match) {
+                            return match[1];
+                        }
                     }
                 }
             } catch (e) {
@@ -164,18 +174,53 @@ async function getChannelIdFromHandle(handle) {
                 if (response.ok) {
                     const html = await response.text();
                     
-                    // Look for channel ID in various places
-                    const patterns = [
+                    // PRIORITY 1: Look for canonical URL (most reliable for main channel)
+                    let match = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/channel\/(UC[a-zA-Z0-9_-]{22})">/);
+                    if (match) {
+                        return match[1];
+                    }
+                    
+                    // PRIORITY 2: Look for Open Graph URL
+                    match = html.match(/<meta property="og:url" content="https:\/\/www\.youtube\.com\/channel\/(UC[a-zA-Z0-9_-]{22})">/);
+                    if (match) {
+                        return match[1];
+                    }
+                    
+                    // PRIORITY 3: Look for the main channel in structured data
+                    match = html.match(/"@type":"VideoObject"[^}]*"channelId":"(UC[a-zA-Z0-9_-]{22})"/);
+                    if (match) {
+                        return match[1];
+                    }
+                    
+                    // PRIORITY 4: Look for channel URL in the main navigation
+                    match = html.match(/href="\/channel\/(UC[a-zA-Z0-9_-]{22})"[^>]*aria-label="[^"]*channel"/i);
+                    if (match) {
+                        return match[1];
+                    }
+                    
+                    // PRIORITY 5: Look for the main channel in page metadata
+                    match = html.match(/<meta itemprop="channelId" content="(UC[a-zA-Z0-9_-]{22})">/);
+                    if (match) {
+                        return match[1];
+                    }
+                    
+                    // PRIORITY 6: Look for channel in the initial data (but more selective)
+                    match = html.match(/"webChannelUrl":"https:\/\/www\.youtube\.com\/channel\/(UC[a-zA-Z0-9_-]{22})"/);
+                    if (match) {
+                        return match[1];
+                    }
+                    
+                    // FALLBACK: Original broad search (less reliable)
+                    const fallbackPatterns = [
                         /"channelId":"(UC[a-zA-Z0-9_-]{22})"/,
-                        /<meta itemprop="channelId" content="(UC[a-zA-Z0-9_-]{22})">/,
                         /"externalId":"(UC[a-zA-Z0-9_-]{22})"/,
                         /channel\/(UC[a-zA-Z0-9_-]{22})/
                     ];
                     
-                    for (let pattern of patterns) {
-                        const match = html.match(pattern);
-                        if (match) {
-                            return match[1];
+                    for (let pattern of fallbackPatterns) {
+                        const fallbackMatch = html.match(pattern);
+                        if (fallbackMatch) {
+                            return fallbackMatch[1];
                         }
                     }
                 }
